@@ -37,18 +37,18 @@
  
                
     </div>
-    <div class="card">
+    <div class="card col-md-4 col-md-offset-4">
         <div class="card-body">
             {% for operation in operations %}
-            <ul>
-                <li>{{ operation.date_created}} || {{operation.amount}} || {{operation.method}} || {{operation.reason}}</li>
+            <ul class="list-group">
+                <li class="list-group-item"><small>{{ operation.date_created}} || {{operation.amount}} || {{operation.method}} || {{operation.reason}}</small></li>
             </ul>
             {% endfor %}
 
-            <h6>zelle:  {{sumZelle}}</h6>
-            <h6>punto: {{sumPunto}}</h6>
-            <h6>DOLARES EN EFECTIVO: {{sumEfectivoD}}</h6>
-            <h6>BOLIVARES EN EFECTIVO: {{sumEfectivoBS}}</h6>
+            <h6>zelle:  ${{sumZelle}}</h6>
+            <h6>punto: BsS. {{sumPunto}}</h6>
+            <h6>DOLARES EN EFECTIVO: ${{sumEfectivoD}}</h6>
+            <h6>BOLIVARES EN EFECTIVO: BsS. {{sumEfectivoBS}}</h6>
 
                   
         </div>

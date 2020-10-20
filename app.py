@@ -37,14 +37,6 @@ class Operacion(db.Model):
         self.reason = reason
 
     
-
-
-    
-
-
-    
-
-
 #routes 
 
 @app.route('/')
@@ -56,6 +48,12 @@ def home():
     listPunto = [0]
     listEfectivoD = [0]
     listEfectivoBS = [0]
+
+    def currencyFormat(monto):
+        currency = "{:,.2f}".format(monto)
+        return currency
+
+
 
     for op in operations:
         if 'ZELLE' in op.method.upper():
@@ -69,12 +67,14 @@ def home():
         if 'DOLARES EFECTIVO' in op.method.upper():
             listEfectivoD.insert(0, op.amount)
             sumEfectivoD = sum(listEfectivoD)
+            
 
         if 'BOLIVARES EFECTIVO' in op.method.upper():
             listEfectivoBS.insert(0, op.amount)
-            sumEfectivoBS = sum(listEfectivoBS)                    
+            sumEfectivoBS = sum(listEfectivoBS)
+                  
 
-    return render_template('index.html', operations = operations, sumZelle = sumZelle, sumPunto = sumPunto, sumEfectivoBS = sumEfectivoBS, sumEfectivoD = sumEfectivoD)
+    return render_template('index.html', operations = operations , sumZelle = currencyFormat(sumZelle), sumPunto = currencyFormat(sumPunto), sumEfectivoBS = currencyFormat(sumEfectivoBS) , sumEfectivoD = currencyFormat(sumEfectivoD) )
 
 @app.route('/create', methods=['POST'])
 def create():
@@ -89,11 +89,13 @@ def create():
     return redirect(url_for('home'))
 
 
-
+'''
 @app.route('/')
 def home():
     tasks = Task.query.all()
     return render_template('index.html', tasks = tasks)
+
+    
 
 @app.route('/create', methods=['POST'])
 def create():
@@ -116,7 +118,7 @@ def done(id):
     db.session.commit()
     return redirect(url_for('home'))
 
-
+'''
 
 #Start App
 
