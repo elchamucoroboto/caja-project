@@ -88,26 +88,7 @@ def create():
     db.session.commit()
     return redirect(url_for('home'))
 
-'''
-@app.route('/suma')
-def suma():
-    
-    data = Operacion.query.all()
-    suma = []
-    for a in data:
-        i = a.amount
-        suma.append(i)
-        suma = sum(suma)
-        return render_template('index.html', suma = suma)
 
- '''
-
-    
-
-
-
-
-'''
 
 @app.route('/')
 def home():
@@ -135,7 +116,7 @@ def done(id):
     db.session.commit()
     return redirect(url_for('home'))
 
-'''
+
 
 #Start App
 
