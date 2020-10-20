@@ -51,13 +51,30 @@ class Operacion(db.Model):
 def home():
     operations = Operacion.query.all()
     ops = db.session.query(Operacion).all()
-    sumList = []
-    for op in operations:
-        sumList.insert(0, op.amount)
-        sumList2 = sum(sumList)
-        
 
-    return render_template('index.html', operations = operations, sumList2 = sumList2)
+    listZelle = [0]
+    listPunto = [0]
+    listEfectivoD = [0]
+    listEfectivoBS = [0]
+
+    for op in operations:
+        if 'ZELLE' in op.method.upper():
+            listZelle.insert(0, op.amount)
+            sumZelle = sum(listZelle)
+
+        if 'PUNTO' in op.method.upper():
+            listPunto.insert(0, op.amount)
+            sumPunto = sum(listPunto)
+
+        if 'DOLARES EFECTIVO' in op.method.upper():
+            listEfectivoD.insert(0, op.amount)
+            sumEfectivoD = sum(listEfectivoD)
+
+        if 'BOLIVARES EFECTIVO' in op.method.upper():
+            listEfectivoBS.insert(0, op.amount)
+            sumEfectivoBS = sum(listEfectivoBS)                    
+
+    return render_template('index.html', operations = operations, sumZelle = sumZelle, sumPunto = sumPunto, sumEfectivoBS = sumEfectivoBS, sumEfectivoD = sumEfectivoD)
 
 @app.route('/create', methods=['POST'])
 def create():
