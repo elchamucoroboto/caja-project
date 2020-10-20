@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql import func
+from sqlalchemy import func
 import datetime
 import pytz
 
@@ -12,32 +12,33 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
+'''
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(200))
     done = db.Column(db.Boolean)
+'''
 
 class Operacion(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     date_created = db.Column(db.DateTime)
     amount = db.Column(db.Float, nullable=False)
+    method = db.Column(db.String(100), nullable=False)
+    reason = db.Column(db.String(100))
 
-    def __init__(self, amount):
+
+
+    def __init__(self, amount, method, reason):
         
         self.amount = amount
         self.date_created = datetime.datetime.now(pytz.timezone('America/Caracas'))
+        self.method = method
+        self.reason = reason
 
     
 
-'''
-op1 = Operacion(22.22)
 
-db.session.add(op1)
-
-ops = Operacion.query.all()
-print (ops)
-'''
     
 
 
@@ -45,6 +46,49 @@ print (ops)
 
 
 #routes 
+
+@app.route('/')
+def home():
+    operations = Operacion.query.all()
+    ops = db.session.query(Operacion).all()
+    sumList = []
+    for op in operations:
+        sumList.insert(0, op.amount)
+        sumList2 = sum(sumList)
+        
+
+    return render_template('index.html', operations = operations, sumList2 = sumList2)
+
+@app.route('/create', methods=['POST'])
+def create():
+    amount = request.form['amount']
+    method = request.form['method']
+    reason = request.form['reason']
+    oper = Operacion(float(amount), method, reason)
+
+    
+    db.session.add(oper)
+    db.session.commit()
+    return redirect(url_for('home'))
+
+'''
+@app.route('/suma')
+def suma():
+    
+    data = Operacion.query.all()
+    suma = []
+    for a in data:
+        i = a.amount
+        suma.append(i)
+        suma = sum(suma)
+        return render_template('index.html', suma = suma)
+
+ '''
+
+    
+
+
+
 
 '''
 
