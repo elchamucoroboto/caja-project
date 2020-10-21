@@ -12,12 +12,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
-'''
-class Task(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(200))
-    done = db.Column(db.Boolean)
-'''
+
 
 class Operacion(db.Model):
     
@@ -55,10 +50,13 @@ def home():
 
 
 
+
+
     for op in operations:
         if 'ZELLE' in op.method.upper():
             listZelle.insert(0, op.amount)
             sumZelle = sum(listZelle)
+            
 
         if 'PUNTO' in op.method.upper():
             listPunto.insert(0, op.amount)
@@ -72,7 +70,9 @@ def home():
         if 'BOLIVARES EFECTIVO' in op.method.upper():
             listEfectivoBS.insert(0, op.amount)
             sumEfectivoBS = sum(listEfectivoBS)
-                  
+            
+        
+
 
     return render_template('index.html', operations = operations , sumZelle = currencyFormat(sumZelle), sumPunto = currencyFormat(sumPunto), sumEfectivoBS = currencyFormat(sumEfectivoBS) , sumEfectivoD = currencyFormat(sumEfectivoD) )
 
@@ -81,6 +81,17 @@ def create():
     amount = request.form['amount']
     method = request.form['method']
     reason = request.form['reason']
+    
+
+    def floatToNegative(monto):
+
+        monto = '-'+str(monto)
+        monto = float(monto)
+        return monto
+
+    if 'DEVOLUCION' in reason.upper() and 'ZELLE' in method.upper() or 'PUNTO' in method.upper() or 'DOLARES EFECTIVO' in method.upper() or 'BOLIVARES EFECTIVO' in method.upper():
+        amount = floatToNegative(amount)
+
     oper = Operacion(float(amount), method, reason)
 
     
