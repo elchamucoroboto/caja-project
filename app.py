@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import func
 import datetime
 import pytz
@@ -30,6 +32,22 @@ class Operacion(db.Model):
         self.date_created = datetime.datetime.now(pytz.timezone('America/Caracas'))
         self.method = method
         self.reason = reason
+
+class User(UserMixin, db.Model):
+    
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String, nullable=False)
+    admin = db.Column(db.Boolean)
+
+
+
+    def __init__(self, username, password):
+        
+        self.username = username
+        self.password = generate_password_hash(password, method='sha256')
+        self.admin = False
+
 
     
 #routes 
@@ -74,7 +92,7 @@ def home():
         
 
 
-    return render_template('index.html', operations = operations , sumZelle = currencyFormat(sumZelle), sumPunto = currencyFormat(sumPunto), sumEfectivoBS = currencyFormat(sumEfectivoBS) , sumEfectivoD = currencyFormat(sumEfectivoD) )
+    return render_template('prueba.html', operations = operations , sumZelle = currencyFormat(sumZelle), sumPunto = currencyFormat(sumPunto), sumEfectivoBS = currencyFormat(sumEfectivoBS) , sumEfectivoD = currencyFormat(sumEfectivoD))
 
 @app.route('/create', methods=['POST'])
 def create():
@@ -135,3 +153,6 @@ def done(id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+#  'list-group-item-success'
