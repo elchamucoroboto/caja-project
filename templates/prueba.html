@@ -37,14 +37,14 @@
                 <div class="jumbotron ">
                  
 
-                    <form>
+                    <form action="/create" method="POST">
                       <div class="form-row">
                         <div class="col-3">
-                          <input type="text" class="form-control" placeholder="MONTO">
+                          <input type="text" class="form-control" name="amount"placeholder="MONTO" required="required">
                         </div>
                         <div class="form-group col-3">
                           
-                          <select class="form-control" id="exampleFormControlSelect1">
+                          <select class="form-control" id="exampleFormControlSelect1" name="method">
                             <option > METODO</option>
                             <option>PUNTO DE VENTA</option>
                             <option>DOLARES EFECTIVO</option>
@@ -55,7 +55,7 @@
                           </select>
                         </div>
                         <div class="col-3">
-                          <input type="text" class="form-control" placeholder="MOTIVO">
+                          <input type="text" class="form-control" placeholder="MOTIVO" name="reason">
                         </div>
                         <div class="col-3">
                           <button class="btn btn-success btn-block">Enviar</button>
@@ -83,13 +83,13 @@
             <div class="col-lg-3 mt-4">
 
                 <div class="jumbotron ">
-                  <h4>ZELLE: $4,000.00</h4>  
+                  <h4>ZELLE: ${{sumZelle}}</h4>  
                   <br>
-                   <h4>PUNTO DE VENTA: BsS. 2,000,000.00</h4> 
+                   <h4>PUNTO DE VENTA: BsS. {{sumPunto}}</h4> 
                    <br>
-                   <h4>DOLARES EN EFECTIVO: $150.00</h4> 
+                   <h4>DOLARES EN EFECTIVO: ${{sumEfectivoD}}</h4> 
                    <br>
-                    <h4>BOLIVARES EN EFECTIVO: BsS. 800,000.00</h4>
+                    <h4>BOLIVARES EN EFECTIVO: BsS. {{sumEfectivoBS}}</h4>
                     <br>
                   </div>
 
