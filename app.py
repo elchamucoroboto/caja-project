@@ -61,6 +61,15 @@ def home():
     listPunto = [0]
     listEfectivoD = [0]
     listEfectivoBS = [0]
+    fondoCajaD = 0.00
+    fondoCajaBs = 0.00
+    sumZelle = 0.00
+    sumPunto = 0.00
+    sumEfectivoD = 0.00
+    sumEfectivoBS = 0.00
+
+
+
 
     def currencyFormat(monto):
         currency = "{:,.2f}".format(monto)
@@ -88,11 +97,20 @@ def home():
         if 'BOLIVARES EFECTIVO' in op.method.upper():
             listEfectivoBS.insert(0, op.amount)
             sumEfectivoBS = sum(listEfectivoBS)
+
+        if 'FONDO DE CAJA DOLARES' in op.method.upper():
+            fondoCajaD = op.amount
+
+        if 'FONDO DE CAJA BOLIVARES' in op.method.upper():
+            fondoCajaBs = op.amount
             
-        
+    
+    venta_total_dolares = sumZelle + sumEfectivoD
+    venta_total_bolivares = sumPunto + sumEfectivoBS
 
 
-    return render_template('prueba.html', operations = operations , sumZelle = currencyFormat(sumZelle), sumPunto = currencyFormat(sumPunto), sumEfectivoBS = currencyFormat(sumEfectivoBS) , sumEfectivoD = currencyFormat(sumEfectivoD))
+    return render_template('prueba.html', operations = operations , sumZelle = currencyFormat(sumZelle), sumPunto = currencyFormat(sumPunto), sumEfectivoBS = currencyFormat(sumEfectivoBS) , 
+    venta_total_dolares = currencyFormat(venta_total_dolares), venta_total_bolivares = currencyFormat(venta_total_bolivares), sumEfectivoD = currencyFormat(sumEfectivoD), fondoCajaD = currencyFormat(fondoCajaD), fondoCajaBs = currencyFormat(fondoCajaBs))
 
 @app.route('/create', methods=['POST'])
 def create():
