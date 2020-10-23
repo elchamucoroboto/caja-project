@@ -1,25 +1,33 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import func
 import datetime
 import pytz
+from datetime import date as dt
+
 
 
 
 app = Flask(__name__)
 
-SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+#APP CONFIG
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SECRET KEY'] = 'eleazar'
 db = SQLAlchemy(app)
 
 
 
+# MODELS
+
 class Operacion(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
-    date_created = db.Column(db.DateTime)
+    date_created = db.Column(db.Date)
     amount = db.Column(db.Float, nullable=False)
     method = db.Column(db.String(100), nullable=False)
     reason = db.Column(db.String(100))
@@ -29,7 +37,7 @@ class Operacion(db.Model):
     def __init__(self, amount, method, reason):
         
         self.amount = amount
-        self.date_created = datetime.datetime.now(pytz.timezone('America/Caracas'))
+        self.date_created = datetime.date.today()#datetime.datetime.now(pytz.timezone('America/Caracas'))
         self.method = method
         self.reason = reason
 
@@ -50,11 +58,13 @@ class User(UserMixin, db.Model):
 
 
     
-#routes 
+#ROUTES 
 
 @app.route('/')
 def home():
-    operations = Operacion.query.all()
+
+    today = datetime.date.today()
+    operations = Operacion.query.filter(Operacion.date_created == today).all()
     ops = db.session.query(Operacion).all()
 
     listZelle = [0]
@@ -125,7 +135,7 @@ def create():
         monto = float(monto)
         return monto
 
-    if 'DEVOLUCION' in reason.upper() and 'ZELLE' in method.upper() or 'PUNTO' in method.upper() or 'DOLARES EFECTIVO' in method.upper() or 'BOLIVARES EFECTIVO' in method.upper():
+    if 'DEVOLUCION' in reason.upper():#and 'ZELLE' in method.upper() or 'PUNTO' in method.upper() or 'DOLARES EFECTIVO' in method.upper() or 'BOLIVARES EFECTIVO' in method.upper():
         amount = floatToNegative(amount)
 
     oper = Operacion(float(amount), method, reason)
@@ -136,20 +146,27 @@ def create():
     return redirect(url_for('home'))
 
 
-'''
-@app.route('/')
-def home():
-    tasks = Task.query.all()
-    return render_template('index.html', tasks = tasks)
+
+@app.route('/informes', methods=['POST', 'GET'])
+def informes():
+
+    if request.method == 'POST':
+
+        desde = request.form['desde']
+        hasta = request.form['hasta']
+
+        informe = Operacion.query.filter(Operacion.date_created <= hasta).filter(Operacion.date_created >= desde).all()
+
+        
+        return render_template('informes.html', informe = informe, desde = desde, hasta = hasta)
+    else:
+        return render_template('informes.html')
 
     
 
-@app.route('/create', methods=['POST'])
-def create():
-    task = Task(content=request.form['task'], done=False)
-    db.session.add(task)
-    db.session.commit()
-    return redirect(url_for('home'))
+
+
+'''
 
 @app.route('/delete/<id>')
 def delete(id):
@@ -173,4 +190,3 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 
-#  'list-group-item-success'
